@@ -15,7 +15,7 @@ elif [ -z "$2" ]; then
 	interpreter_filename=$(file "$1" | sed -E 's/.*interpreter \/([^ ,]+).*/\1/' | sed -E 's/(.*)\/([^\/])/\2/')
 	echo "Interpreter: $interpreter_filename"
 	echo "Searching /nix/store/ for the interpreter (filtered by glibc)"
-	find /nix/store/ -name $interpreter_filename |grep glibc
+	find /nix/store/ -maxdepth 3 -name $interpreter_filename |grep glibc
 elif [ -z "$3" ]; then
 	echo "Mode 2: Patching ELF with interpreter"
 	patchelf --set-interpreter "$2" "$1"
