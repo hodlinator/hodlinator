@@ -8,7 +8,7 @@ Assumes one has created `$HOME/guix/`-subdirs. Remove `HOSTS`-entries below to o
 ```shell
 env -i HOME="$HOME" PATH="$PATH" USER="$USER" SOURCES_PATH="$HOME/guix/sources" \
     BASE_CACHE="$HOME/guix/cache" SDK_PATH="$HOME/guix/SDKs" \
-    CCACHE_BASEDIR="$HOME" CCACHE_MAXSIZE="50G" \
+    CCACHE_BASEDIR="$HOME" CCACHE_MAXSIZE="50G" CCACHE_DIR="$HOME/.cache/ccache" \
     HOSTS="x86_64-linux-gnu arm-linux-gnueabihf aarch64-linux-gnu riscv64-linux-gnu powerpc64-linux-gnu powerpc64le-linux-gnu x86_64-w64-mingw32 x86_64-apple-darwin arm64-apple-darwin" \
     ./contrib/guix/guix-build
 ```
