@@ -9,8 +9,14 @@ On Linux, building using a container and then fetching the binaries to test on W
   ```shell
   env -i HOME="$HOME" PATH="$PATH" USER="$USER" bash -c 'MAKEJOBS="-j$(nproc)" FILE_ENV="./ci/test/00_setup_env_win64.sh" ./ci/test_run_all.sh'
   ```
-* (Inspect container through `docker exec -it ci_win64 bash` to see file layout).
-* Copy binaries out from the container (`docker cp ci_win64:/ci_container_base/ci/scratch/build-x86_64-w64-mingw32/bin/bitcoind.exe .`).
+* (Inspect container to see file layout).
+  ```shell
+  docker exec -it ci_win64 bash
+  ```
+* Copy binaries out from the container.
+  ```shell
+  docker cp ci_win64:/ci_container_base/ci/scratch/build-x86_64-w64-mingw32/bin/bitcoind.exe .
+  ```
 * Run binaries on Windows.
 
 ## Example: clang-tidy job
