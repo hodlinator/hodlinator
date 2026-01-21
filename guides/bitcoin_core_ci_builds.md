@@ -4,7 +4,7 @@
 
 On Linux, building using a container and then fetching the binaries to test on Windows:
 
-* Modify `ci/test/02_run_container.sh` to not `docker container kill` itself at the end.
+* Modify `ci/test/02_run_container.[py|sh]` to not `docker container kill` itself at the end.
 * Run
   ```shell
   env -i HOME="$HOME" PATH="$PATH" USER="$USER" bash -c 'MAKEJOBS="-j$(nproc)" FILE_ENV="./ci/test/00_setup_env_win64.sh" ./ci/test_run_all.sh'
