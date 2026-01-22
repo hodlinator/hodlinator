@@ -2,7 +2,7 @@
 
 Disable UI to avoid slow-to-build Qt dependencies:
 ```
-cmake -B build --preset vs2022 -DVCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:\vcpkg" -DBUILD_GUI=OFF -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;tests"
+cmake -B build --preset vs2022 -DVCPKG_INSTALL_OPTIONS="--x-buildtrees-root=C:\vcpkg" -DBUILD_GUI=OFF -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON -DVCPKG_MANIFEST_FEATURES="wallet;tests" -DWITH_ZMQ=OFF
 cmake --build build --config Release -j16
 ```
 
