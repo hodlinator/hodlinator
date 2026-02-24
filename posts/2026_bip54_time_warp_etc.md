@@ -1,10 +1,9 @@
-[ Editorial - this is a WIP draft ]
+*[ Editorial - this is a WIP draft
 
-[ Editorial - this needs to be accompanied by diagrams.
+*It needs to be accompanied by diagrams.*
+*After having written most of this I noticed there are some quite helpful ones for Time warp and Murch-Zawy at https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4*
 
-After having written most of this I noticed there are some quite helpful ones for Time warp and Murch-Zawy at https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4
-
-]
+*]*
 
 The previous soft fork, Taproot, introduced a lot of new functionality. In contrast, the BIP54 Consensus Cleanup only narrows what is allowed. It adds restrictions on:
 
@@ -12,15 +11,6 @@ The previous soft fork, Taproot, introduced a lot of new functionality. In contr
  * Coinbase transaction lock times.
  * Transaction sizes.
  * Sigop-counts across blocks.
-
-[ Editorial - lengthier explanations for above points
-
- * The timestamps of the first block in the difficulty adjustment interval (DAI) must be higher or equal to the preceding block. The time stamp of the last block in the difficulty adjustment interval must be greater than the timestamp of the first block in the interval.
- * Requiring lock times height-1 lock time (and non-final sequence value) for coinbase transactions to avoid duplicate transaction hashes/ids.
- * Banning 64-byte transactions to simplify building SPV clients.
- * Counting sigops from spent outputs of previous blocks in addition to input sigops for the current block.
-
-]
 
 This post focuses on the added restrictions to timestamp values.
 
@@ -36,7 +26,7 @@ Current consensus rules say:
 
 ## Thought experiment: faking the slowest chain
 
-Technically we could start mining blocks after the genesis block for whom the (faked) timestamp only increases 1 second every 6 blocks. That way our timestamps would be slowly increasing from the Unix Epoch time 1231006505 (Saturday, January 3, 2009 6:15:05 PM GMT). At 930'000 blocks we would still be at Monday, January 5, 2009 1:18:25 PM.
+Technically miners could start mining blocks after the genesis block for whom the (faked) timestamp only increases 1 second every 6 blocks. That way timestamps would be slowly increasing from the Unix Epoch time 1231006505 (Saturday, January 3, 2009 6:15:05 PM GMT). At 930'000 blocks the fork would still be at Monday, January 5, 2009 1:18:25 PM.
 
 Doing that would throw off the Difficulty Adjustment Algorithm (DAA). It cannot verify that timestamps in blocks reflect true UTC time, it just has to work with what it can deterministically check. The DAA compares timestamps between the first and last blocks of the 2016-block Difficulty Adjustment Interval (DAI), block #0 vs block #2015. The small difference in seconds makes it think we are mining way too fast, and make it increase the difficulty by the maximum of 4x every 2016 blocks in order to slow down miners and reach an average of ~10 mins/block. (Satoshi made an off-by-one error in counting blocks so the algorithm doesn't aim for exactly 10 mins). Such a chain would be the hardest possible fork. That would lead to much more than 10 mins wall time on average to produce new blocks, and become less popular with miners. Miners are therefore somewhat incentivized to use something close to their wall-time in order for the whole mining game to work.
 
@@ -58,9 +48,10 @@ People have wreaked havoc on Testnet 3 by performing block storms - exploiting t
 
 [Testnet 4 / BIP94](https://github.com/bitcoin/bips/blob/master/bip-0094.mediawiki) adjusts the DAA in two ways:
 
-A. When calculating the difficulty of the first block of a new DAI, instead of using the difficulty of the directly preceding block as reference-value, we use the first block of the preceding DAI. That way we aren't subject to the 20 minute exception, given that it only applies to blocks which are not the first of a DAI.
-
-B. The timestamp of the first block in a DAI must be >= the timestamp of the immediately preceding block -600 seconds.
+<ol type="A">
+<li>When calculating the difficulty of the first block of a new DAI, instead of using the difficulty of the directly preceding block as reference-value, we use the first block of the preceding DAI. That way we aren't subject to the 20 minute exception, given that it only applies to blocks which are not the first of a DAI.</li>
+<li>The timestamp of the first block in a DAI must be >= the timestamp of the immediately preceding block -600 seconds.</li>
+</ol>
 
 The timestamp new rule from Testnet 4 (B above) to restrict timestamps of the first block in a DAI was [first proposed in the original Consensus Cleanup proposal](https://github.com/TheBlueMatt/bips/blob/cleanup-softfork/bip-XXXX.mediawiki?plain=1#L40). By putting a constraint on last block of DAI+next first block of a DAI, we are influencing the input parameters of the DAA, which are the timestamps of the first and last blocks.
 
@@ -73,7 +64,7 @@ If an attacker plans to only activate their attack multiple weeks in the future,
 
 Probably the main goal of this attack is to wreak havoc as well. Secondary goals of the attack though is to produce more PoW and blocks (to gain extra subsidy vs mining on the honest fork), within a given time interval than the honest chain. While still having the tip of our attack fork be within 2 hours of the current time at the time we publish it.
 
-The MTP rule enforces that a block's timestamp is greater than the median timestamp of the preceding 11 blocks. Classic Time warp attack exploited that by abusing one of the slots prior to the median 6th block. [<- Needs to be clarified ->] Instead of abusing one slot we can abuse two and still conform to the "first block of DAI's timestamp cannot be before preceeding block"-rule used on Testnet 4. This allows us to keep time creeping along from difficulty period 1 into difficulty 2 despite the speedbumps of the DAI 1s last and DAI 2s first blocks which are set further in the future to trick the DAA while still abiding by something like the Testnet 4 timestamp rule.
+The MTP rule enforces that a block's timestamp is greater than the median timestamp of the preceding 11 blocks. Classic Time warp attack exploited that by abusing one of the slots prior to the median 6th block. *[<- Needs to be clarified ->]* Instead of abusing one slot we can abuse two and still conform to the "first block of DAI's timestamp cannot be before preceeding block"-rule used on Testnet 4. This allows us to keep time creeping along from difficulty period 1 into difficulty 2 despite the speedbumps of the DAI 1s last and DAI 2s first blocks which are set further in the future to trick the DAA while still abiding by something like the Testnet 4 timestamp rule.
 
 So the attacker can decide that they will not announce their fork until 8 weeks from the start of a new DAI.
 
@@ -82,7 +73,7 @@ Why would they want to increase the difficulty? They still need to contend with 
 What makes Murch-Zawy more problematic than a regular 51% attack?
 Not much, aside from the block subsidy being consumed faster than a fork that only censored transactions for example.
 
-[...section needs more work...]
+*[...section needs more work...]*
 
 David Harding adds some good context: https://delvingbitcoin.org/t/zawy-s-alternating-timestamp-attack/1062/23
 
@@ -90,9 +81,9 @@ David Harding adds some good context: https://delvingbitcoin.org/t/zawy-s-altern
 ## The BIP54 fix
 
  * The timestamp of the first block of a DAI must be >= the timestamp of the last block in the previous DAI. (Already active on Testnet 4, see above, although the offset was increased from -600 to -7200 seconds).
- * The timestamp of the last block in the DAI must be >= the timestamp of the first block in the DAI. (New in BIP54 to mitigate Murch-Zawy attacks [can't see how this would be a problem for the "new timewarp" diagram in https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4]).
+ * The timestamp of the last block in the DAI must be >= the timestamp of the first block in the DAI. (New in BIP54 to mitigate Murch-Zawy attacks *[can't see how this would be a problem for the "new timewarp" diagram in https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4]*).
 
-This way one cannot exploit MTP to warp the first block of a difficulty period back to ~6 minutes after the first block of the last period (Time warp). One also cannot make the difference between the timestamps of the first and last blocks of the same period negative... [..... <- rly? Needs more work. ]
+This way one cannot exploit MTP to warp the first block of a difficulty period back to ~6 minutes after the first block of the last period (Time warp). One also cannot make the difference between the timestamps of the first and last blocks of the same period negative... *[..... <- rly? WIP. ]*
 
 
 ## Is it the best fix though?
@@ -108,3 +99,13 @@ Reflection: Maybe this is an issue for me because of my hangover of sycophantic 
 [^3]: https://delvingbitcoin.org/t/zawy-s-alternating-timestamp-attack/1062
 [^4]: https://delvingbitcoin.org/t/zawy-s-alternating-timestamp-attack/1062/15
 [^5]: https://delvingbitcoin.org/t/where-does-the-33-33-threshold-for-selfish-mining-come-from/1757/2
+
+
+*[ Editorial - lengthier explanations for the points at the top*
+
+ * *The timestamps of the first block in the difficulty adjustment interval (DAI) must be higher or equal to the preceding block. The time stamp of the last block in the difficulty adjustment interval must be greater than the timestamp of the first block in the interval.*
+ * *Requiring lock times height-1 lock time (and non-final sequence value) for coinbase transactions to avoid duplicate transaction hashes/ids.*
+ * *Banning 64-byte transactions to simplify building SPV clients.*
+ * *Counting sigops from spent outputs of previous blocks in addition to input sigops for the current block.*
+
+*]*
