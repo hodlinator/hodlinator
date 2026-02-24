@@ -1,9 +1,7 @@
-*[ Editorial - this is a WIP draft
+*[ Editorial - this is a WIP draft*
 
 *It needs to be accompanied by diagrams.*
-*After having written most of this I noticed there are some quite helpful ones for Time warp and Murch-Zawy at https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4*
-
-*]*
+*After having written most of this I noticed there are some quite helpful ones for Time warp and Murch-Zawy at https://bitcoinops.org/en/newsletters/2024/08/16/#new-time-warp-vulnerability-in-testnet4 ]*
 
 The previous soft fork, Taproot, introduced a lot of new functionality. In contrast, the BIP54 Consensus Cleanup only narrows what is allowed. It adds restrictions on:
 
@@ -106,6 +104,4 @@ Reflection: Maybe this is an issue for me because of my hangover of sycophantic 
  * *The timestamps of the first block in the difficulty adjustment interval (DAI) must be higher or equal to the preceding block. The time stamp of the last block in the difficulty adjustment interval must be greater than the timestamp of the first block in the interval.*
  * *Requiring lock times height-1 lock time (and non-final sequence value) for coinbase transactions to avoid duplicate transaction hashes/ids.*
  * *Banning 64-byte transactions to simplify building SPV clients.*
- * *Counting sigops from spent outputs of previous blocks in addition to input sigops for the current block.*
-
-*]*
+ * *Counting sigops from spent outputs of previous blocks in addition to input sigops for the current block. ]*
