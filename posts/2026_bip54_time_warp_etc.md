@@ -84,7 +84,7 @@ David Harding adds some good context: https://delvingbitcoin.org/t/zawy-s-altern
 This way one cannot exploit MTP to warp the first block of a difficulty period back to ~6 minutes after the first block of the last period (Time warp). One also cannot make the difference between the timestamps of the first and last blocks of the same period negative... *[..... <- rly? WIP. ]*
 
 
-## Is it the best fix though?
+## Is BIP54 as it stands the best fix though?
 
 I think Zawy[^1][^2][^3][^4] makes a strong case in encouraging monotonicity for all block header timestamps, not just for the first and last blocks of a DAI. The lax rules of MTP and 2 hour future block time is not just an issue for OpenTimestamps, it is an issue for CSV and CLT calculations themselves. It would be nice if a minority of miners writing fairly accurate timestamps could force the rest of the miners to keep a somewhat regular timestamp, as long as it doesn't create too much of an incentive to re-org out their blocks. (Another approach Zawy mentions[^5] is that in the case of 2 competing blocks at the same height, bias towards building on top of the timestamp closest to one's own clock upon time of arrival).
 
