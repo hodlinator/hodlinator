@@ -4,7 +4,7 @@
 
 Command recommended by bench_bitcoin:
 ```shell
-pyperf system tune
+doas pyperf system tune
 ```
 
 ## Configure kernel to allow sufficient sample rate
